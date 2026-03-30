@@ -5,4 +5,4 @@ server:
 	python manage.py runserver
 
 pylint:
-	pylint $(shell git ls-files '*.py')
+	poetry run pylint $(shell git ls-files '*.py')
