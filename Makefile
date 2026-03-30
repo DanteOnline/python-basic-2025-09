@@ -8,4 +8,4 @@ pylint:
 	poetry run pylint $(shell git ls-files '*.py')
 
 coverage:
-	pytest -s --cov --cov-report html --cov-fail-under 84
+	poetry run pytest -s --cov --cov-report html --cov-fail-under 84
