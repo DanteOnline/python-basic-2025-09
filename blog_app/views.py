@@ -1,29 +1,36 @@
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from blog_app.models import Post, Author
-from blog_app.forms import PostForm, PostModelForm, PostDeleteForm
-
+from blog_app.forms import PostModelForm
 
 
 class IndexTemplateView(TemplateView):
     """Главная страница."""
+
     template_name = "blog_app/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = '-= Главная страница =-'
+        context["title"] = "-= Главная страница =-"
         return context
+
 
 # def index(request):
 #     """Главная страница."""
 #     return render(request, "blog_app/index.html")
 
 
-def about(request):
+def about(_):
     """Главная страница."""
     return HttpResponse("<h2>Cтраница о нас.</h2>")
 
@@ -34,6 +41,7 @@ class PostBase:
 
 class PostListView(PostBase, ListView):
     """Представления для отображения списка постов."""
+
     # model = Post
     # template_name = "blog_app/post_list.html"
     context_object_name = "posts"
@@ -51,6 +59,7 @@ class PostListView(PostBase, ListView):
 
 class PostDetailView(PostBase, DetailView):
     """Представления для отображения одного поста."""
+
     # model = Post
     # slug_field = 'slug'
     # template_name = "blog_app/post_detail.html"
@@ -59,9 +68,10 @@ class PostDetailView(PostBase, DetailView):
 
     def get(self, request, *args, **kwargs):
         post = self.get_object()
-        post.rating = getattr(post, 'rating', 0) + 1
-        post.save(update_fields=['rating'])
+        post.rating = getattr(post, "rating", 0) + 1
+        post.save(update_fields=["rating"])
         return super().get(request, *args, **kwargs)
+
 
 # def post_detail(request, post_id):
 #     """Детайльный пост."""
@@ -75,16 +85,16 @@ class PostDetailView(PostBase, DetailView):
 
 class PostCreateView(PostBase, CreateView):
     """Представления для создания нового поста."""
+
     # model = Post
     # template_name = "blog_app/post_form.html"
     template_name = "blog_app/post_add.html"
     form_class = PostModelForm
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy("post_list")
 
     def form_valid(self, form):
-        messages.success(self.request, 'Пост успешно создан')
+        messages.success(self.request, "Пост успешно создан")
         return super().form_valid(form)
-
 
 
 # def post_add(request):
@@ -107,11 +117,13 @@ class PostCreateView(PostBase, CreateView):
 
 class PostUpdateView(PostBase, UpdateView):
     """Представления для редактирования поста."""
+
     # model = Post
     # template_name = "blog_app/post_form.html"
     template_name = "blog_app/post_edit.html"
     form_class = PostModelForm
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy("post_list")
+
 
 #
 # def post_edit(request, post_id):
@@ -135,11 +147,12 @@ class PostUpdateView(PostBase, UpdateView):
 
 class PostDeleteView(PostBase, DeleteView):
     """Представления для удаления поста."""
+
     # model = Post
     # template_name = "blog_app/post_form.html"
     template_name = "blog_app/post_delete.html"
     # form_class = PostModelForm
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy("post_list")
 
 
 # def post_delete(request, post_id):
@@ -168,8 +181,8 @@ def author_list(request):
     """Список авторов."""
     authors = Author.objects.all()
     context = {
-        'title': 'Список Авторов!',
-        'authors': authors,
+        "title": "Список Авторов!",
+        "authors": authors,
     }
     return render(request, "blog_app/author_list.html", context=context)
 
@@ -178,7 +191,7 @@ def author_detail(request, author_id):
     """Детальный автор."""
     author = get_object_or_404(Author, pk=author_id)
     context = {
-        'author': author,
+        "author": author,
     }
 
     return render(request, "blog_app/author_detail.html", context=context)
